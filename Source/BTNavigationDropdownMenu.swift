@@ -221,6 +221,7 @@ open class BTNavigationDropdownMenu: UIView {
     }
     
     open var didSelectItemAtIndexHandler: ((_ indexPath: Int) -> ())?
+    open var didChangeOpenStatusHandler: ((_ open: Bool) -> ())?
     open var isShown: Bool!
 
     fileprivate weak var navigationController: UINavigationController?
@@ -379,6 +380,7 @@ open class BTNavigationDropdownMenu: UIView {
         self.menuWrapper.frame.origin.y = self.navigationController!.navigationBar.frame.maxY
         
         self.isShown = true
+        self.didChangeOpenStatusHandler!(true);
         
         // Table view header
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 300))
@@ -434,7 +436,9 @@ open class BTNavigationDropdownMenu: UIView {
             options: [],
             animations: {
                 self.tableView.frame.origin.y = CGFloat(-200)
-            }, completion: nil
+            }, completion: { _ in
+                self.didChangeOpenStatusHandler!(false);
+            }
         )
         
         // Animation
@@ -455,7 +459,7 @@ open class BTNavigationDropdownMenu: UIView {
     func rotateArrow() {
         UIView.animate(withDuration: self.configuration.animationDuration, animations: {[weak self] () -> () in
             if let selfie = self {
-                selfie.menuArrow.transform = selfie.menuArrow.transform.rotated(by: 180 * CGFloat(M_PI/180))
+                selfie.menuArrow.transform = selfie.menuArrow.transform.rotated(by: 180 * CGFloat(Double.pi/180))
             }
             })
     }
